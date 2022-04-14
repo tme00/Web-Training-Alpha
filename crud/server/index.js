@@ -32,7 +32,7 @@ app.post('/create', (req, res) => {
         });
 });
 
-app.get('/employees',(rec, res) =>{
+app.get('/employees',(req, res) =>{
     db.query("SELECT * FROM employees", (err, result) => {
         if(err){
             console.log(err);
@@ -41,6 +41,34 @@ app.get('/employees',(rec, res) =>{
         }
     })
 })
+
+app.put('/update', (req, res) => {
+    const id = req.body.id;
+    const wage = req.body.wage;
+    db.query(
+        "UPDATE employees SET wage = ? WHERE id = ?", 
+    [wage, id], //array because multiple question marks, if there's only one question mark then you can pass it as a normal value
+    (err, result) => {
+        if(err){
+            console.log(err);
+        }else{
+            res.send(result);
+        }
+    }
+    );
+});
+
+app.delete("/delete/:id", (req, res)=>{
+    const id=req.params.id;
+    
+    db.query("DELETE FROM employees WHERE id = ?", id,(err, result)=>{
+        if(err){
+            console.log(err)
+        }else{
+            res.send(result);
+        }
+    });
+});
 
 app.listen(3001, ()=> {
     console.log("Yay! Your server is running.");
